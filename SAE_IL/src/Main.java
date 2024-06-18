@@ -16,6 +16,7 @@ public class Main {
 
         //image.modif_color("src/", "img.jpg", "image_modif3","png");
       //  image.modif_oeil("src/", "img.jpg", "image_modif4","png");
-        image.flouter_moyenne("src/", "img.jpg", "image_flou","png");
+        //image.flouter_moyenne("src/", "img.jpg", "image_flou","png");
+        image.flouter_gaussienne("src/", "img.jpg", "image_flou_gaussien","png");
     }
 }

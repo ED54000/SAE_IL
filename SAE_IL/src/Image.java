@@ -166,4 +166,35 @@ try {
             System.out.println(e);
         }
     }
+
+    public void flouter_gaussienne(String path, String name, String newName, String format){
+        Flou_gaussien f = new Flou_gaussien();
+        int flou = 8;
+        try{
+            File file = new File(path+name);
+            BufferedImage img = ImageIO.read(file);
+            Color[][] tab = new Color[flou][flou];
+            BufferedImage new_img = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+            for (int y = 0; y < img.getHeight(); y+=flou) {
+                for (int x = 0; x < img.getWidth(); x+=flou) {
+                    for(int k = 0; k < Math.min(flou,img.getHeight()-y); k++){
+                        for(int i = 0; i < Math.min(flou,img.getWidth()-x); i++){
+                            int pixel = img.getRGB(x+i, y+k);
+                            tab[k][i] = new Color(pixel);
+                        }
+                    }
+                    Color color = f.calcule(tab);
+                    for(int k = 0; k < Math.min(flou,img.getHeight()-y); k++){
+                        for(int i = 0; i <  Math.min(flou,img.getWidth()-x); i++){
+                            new_img.setRGB(x+i, y+k, color.getRGB());
+                        }
+                    }
+                }
+            }
+
+            ImageIO.write(new_img, format, new File(path+newName+"."+format));
+        }catch (IOException e){
+            System.out.println(e);
+        }
+    }
 }
