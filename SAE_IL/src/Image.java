@@ -191,7 +191,6 @@ try {
                     }
                 }
             }
-
             ImageIO.write(new_img, format, new File(path+newName+"."+format));
         }catch (IOException e){
             System.out.println(e);
