@@ -1,5 +1,7 @@
+import java.awt.*;
+
 public interface Flou {
 
-    public void calcule(String src, String dest, String format);
+    public Color calcule(Color[][] couleurs);
 
 }
