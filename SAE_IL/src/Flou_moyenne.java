@@ -6,14 +6,14 @@ public class Flou_moyenne implements Flou{
         int r = 0;
         int g = 0;
         int b = 0;
-        for(int i = 0; i < couleurs.length; i++){
-            for(int j = 0; j < couleurs[0].length; j++){
-                r += couleurs[i][j].getRed()/sum;
-                g += couleurs[i][j].getGreen()/sum;
-                b += couleurs[i][j].getBlue()/sum;
+        for (Color[] list : couleurs) {
+            for (Color c : list) {
+                r += c.getRed();
+                g += c.getGreen();
+                b += c.getBlue();
             }
         }
-        return new Color(r,g,b);
+        return new Color((int) r/sum,(int) g/sum,(int) b/sum);
     }
 
 }
