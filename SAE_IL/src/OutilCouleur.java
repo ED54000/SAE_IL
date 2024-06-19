@@ -11,6 +11,13 @@ public  class OutilCouleur {
         return tab;
     }
 
+    public  static int increaseValue(int value, int percentage) {
+        double factor = percentage / 100.0;
+        int increase = (int) Math.round(factor * (255 - value));
+        int newValue = value + increase;
+        return Math.min(newValue, 255); // S'assurer que la valeur ne dépasse pas 255
+    }
+
     static double colorPixel(Color color1 , Color color2){
         double r =  pow((color1.getRed() - color2.getRed()),2);
         double g = pow((color1.getGreen() - color2.getGreen()),2);

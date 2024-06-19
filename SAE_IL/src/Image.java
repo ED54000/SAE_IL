@@ -306,8 +306,15 @@ try {
             for (int y = 0; y < img.getHeight(); y++) {
                 for (int x = 0; x < img.getWidth(); x++) {
                     int pixel = img.getRGB(x, y);
-                    double nouveau = Math.round(pixel + 75.0/100.0 * (255 - pixel));
-                    new_img.setRGB(x, y, (int)nouveau);
+                    int alpha = (pixel >> 24) & 0xff;
+                    int red = (pixel >> 16) & 0xff;
+                    int green = (pixel >> 8) & 0xff;
+                    int blue = pixel & 0xff;
+                    red = OutilCouleur.increaseValue(red, 75);
+                    green = OutilCouleur.increaseValue(green, 75);
+                    blue = OutilCouleur.increaseValue(blue, 75);
+                    int newPixel = (alpha << 24) | (red << 16) | (green << 8) | blue;
+                    new_img.setRGB(x, y, newPixel);
                 }
             }
             ImageIO.write(new_img, format, new File(path+newName+"."+format));
