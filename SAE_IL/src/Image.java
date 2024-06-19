@@ -3,7 +3,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.List;
 
 
 public class Image {
@@ -12,6 +13,77 @@ public class Image {
         File file = new File(path+name);
         BufferedImage img = ImageIO.read(file);
         ImageIO.write(img, format, new File(path+newName+"."+format));
+    }
+
+    public String[] convertCluster(int[][] param, int[] clusters){
+        BiomeRGBMap b= new BiomeRGBMap();
+        if (param.length != clusters.length) {
+            throw new IllegalArgumentException("Le nombre de pixels et le nombre de clusters doivent être identiques.");
+        }
+
+        // Initialiser une map pour stocker les clusters et leurs pixels associés
+        Map<Integer, List<int[]>> clusterMap = new HashMap<>();
+
+        // Parcourir chaque pixel et son assignation de cluster
+        for (int i = 0; i < param.length; i++) {
+            int[] pixel = param[i];
+            int cluster = clusters[i];
+            if(cluster != 0){
+                // Ajouter le pixel au cluster correspondant
+                clusterMap.computeIfAbsent(cluster, k -> new ArrayList<>()).add(pixel);
+            }
+        }
+
+        int[][] moy = new int[clusterMap.size()+1][3];
+        String[] biomes = new String[clusterMap.size()+1];
+
+        biomes[0] = "bruit";
+
+        for (Map.Entry<Integer, List<int[]>> entry : clusterMap.entrySet()) {
+            int cluster = entry.getKey();
+            List<int[]> pixelsInCluster = entry.getValue();
+
+            int sumR = 0, sumG = 0, sumB = 0;
+
+            for (int[] pixel : pixelsInCluster) {
+                sumR += pixel[0];
+                sumG += pixel[1];
+                sumB += pixel[2];
+            }
+
+            int count = pixelsInCluster.size();
+            int avgR = sumR / count;
+            int avgG = sumG / count;
+            int avgB = sumB / count;
+
+            biomes[cluster] =  b.getBiome(new int[]{avgR, avgG, avgB});
+        }
+
+        return biomes;
+    }
+
+    public int[][] image_to_param(String path, String name){
+        File file = new File(path+name);
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        int[][] param = new int[img.getHeight()*img.getWidth()][5];
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                int pixel = img.getRGB(x, y);
+                int[] tab = OutilCouleur.getTabColor(pixel);
+                param[y*img.getHeight() + x][0] = tab[0];
+                param[y*img.getHeight() + x][1] = tab[1];
+                param[y*img.getHeight() + x][2] = tab[2];
+                param[y*img.getHeight() + x][3] = x;
+                param[y*img.getHeight() + x][4] = y;
+            }
+        }
+        return param;
     }
 
     public void copy_by_pixel(String path, String name, String newName, String format){
@@ -196,4 +268,23 @@ try {
             System.out.println(e);
         }
     }
+
+    public void afficherBiomes(String path, String name, String newName, String format){
+        try{
+            File file = new File(path+name);
+            BufferedImage img = ImageIO.read(file);
+            BufferedImage new_img = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            for (int y = 0; y < img.getHeight(); y++) {
+                for (int x = 0; x < img.getWidth(); x++) {
+                    int pixel = img.getRGB(x, y);
+                    double nouveau = Math.round(pixel + 75.0/100.0 * (255 - pixel));
+                    new_img.setRGB(x, y, (int)nouveau);
+                }
+            }
+            ImageIO.write(new_img, format, new File(path+newName+"."+format));
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+    }
+
 }
