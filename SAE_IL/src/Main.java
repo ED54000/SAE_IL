@@ -19,7 +19,7 @@ public class Main {
       //  image.modif_oeil("src/", "img.jpg", "image_modif4","png");
         //image.flouter_moyenne("src/", "img.jpg", "image_flou","png");
        // image.flouter_gaussienne("img/", "Planete 2.jpg", "Planete_Floue","png");
-        DBScan scan = new DBScan(5,6);
+        DBScan scan = new DBScan(10,60);
         int[][] param = image.image_to_param("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "test2.jpg");
         int[] clusters = scan.algoClust(param);
         String[] biomes = image.convertCluster(param, clusters);

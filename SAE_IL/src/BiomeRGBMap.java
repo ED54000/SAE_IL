@@ -6,11 +6,18 @@ public class BiomeRGBMap {
     public BiomeRGBMap() {
 
         // Ajout des biomes et leurs valeurs RGB
-        biomeMap.put("Ocean profond", new int[]{0, 0, 139});
-        biomeMap.put("Ocean", new int[]{0, 0, 255});
-        biomeMap.put("Eau peu profonde", new int[]{0, 191, 255});
-        biomeMap.put("Plage", new int[]{238, 214, 175});
+        biomeMap.put("Désert", new int[]{152, 140, 120});
+        biomeMap.put("Forêt tropicale", new int[]{46, 64, 34});
+        biomeMap.put("Tundra", new int[]{71, 70, 61});
+        biomeMap.put("Savane", new int[]{84, 106, 70});
+        biomeMap.put("Forêt tempérée", new int[]{59, 66, 43});
+        biomeMap.put("Eau peu profonde", new int[]{49, 83, 100});
+        biomeMap.put("Eau profonde", new int[]{12, 31, 47});
+        biomeMap.put("Prairie", new int[]{104, 95, 82});
+        biomeMap.put("Taïga", new int[]{43, 50, 35});
+        biomeMap.put("Glacier", new int[]{200, 200, 200});
     }
+
 
     public String getBiome(int[] x){
         int[] meilleurRGB = {237, 201, 175};
