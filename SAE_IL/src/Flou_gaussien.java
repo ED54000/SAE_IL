@@ -16,7 +16,7 @@ public class Flou_gaussien implements Flou{
         }
         for(int i = 0; i < couleurs.length; i++){
             for(int j = 0; j < couleurs[0].length; j++){
-                r += (couleurs[i][j].getRed()*calculIndice(i, j, sigma)/sum);
+                r += couleurs[i][j].getRed()*calculIndice(i, j, sigma)/sum;
                 g += couleurs[i][j].getGreen()*calculIndice(i, j, sigma)/sum;
                 b += couleurs[i][j].getBlue()*calculIndice(i, j, sigma)/sum;
             }
