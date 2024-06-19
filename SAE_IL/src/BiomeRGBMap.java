@@ -36,7 +36,6 @@ public class BiomeRGBMap {
                 biome = key;
             }
         }
-        System.out.println(biome);
         return biome;
     }
 
