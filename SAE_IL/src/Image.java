@@ -34,7 +34,6 @@ public class Image {
             }
         }
 
-        int[][] moy = new int[clusterMap.size()+1][3];
         String[] biomes = new String[clusterMap.size()+1];
 
         biomes[0] = "bruit";
@@ -56,20 +55,41 @@ public class Image {
             int avgG = sumG / count;
             int avgB = sumB / count;
 
+            System.out.println("Cluster " + cluster + ": " + avgR + ", " + avgG + ", " + avgB);
+
             biomes[cluster] =  b.getBiome(new int[]{avgR, avgG, avgB});
         }
 
         return biomes;
     }
 
-    public int[][] image_to_param(String path, String name){
-        File file = new File(path+name);
-        BufferedImage img = null;
-        try {
-            img = ImageIO.read(file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public void imagebiome(int[][] param, String[] biomes, int[] clusters, String path, String newName, String ext, int width, int height){
+        BiomeRGBMap b= new BiomeRGBMap();
+        // reforme une nouvelle image en fonction des couleurs des biomes attribués
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        for (int i = 0; i < param.length; i++) {
+            int cluster = clusters[i];
+            int color;
+            int x = param[i][3];
+            int y = param[i][4];
+            if(cluster != 0) {
+                int[] rgb = b.getRGB(biomes[cluster]);
+                color = new Color(rgb[0], rgb[1], rgb[2]).getRGB();
+            }else{
+                color = new Color(0,0,0).getRGB();
+            }
+            img.setRGB(x, y, color);
         }
+        try {
+            ImageIO.write(img, ext, new File(path+newName+"."+ext));
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+    }
+
+    public int[][] image_to_param(String path, String name) throws IOException {
+        File file = new File(path+name);
+        BufferedImage img = ImageIO.read(file);
 
         int[][] param = new int[img.getHeight()*img.getWidth()][5];
         for (int y = 0; y < img.getHeight(); y++) {
@@ -184,6 +204,15 @@ try {
         }catch (IOException e){
             System.out.println(e);
         }
+    }
+
+    public int[] getDim(String path, String name) throws IOException {
+        File file = new File(path+name);
+        BufferedImage img = ImageIO.read(file);
+        int[] dim = new int[2];
+        dim[0] = img.getWidth();
+        dim[1] = img.getHeight();
+        return dim;
     }
     public void modif_oeil(String path, String name, String newName, String format)  {
         try{

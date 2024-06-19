@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class DBScan implements InterfaceClustering {
@@ -30,7 +31,7 @@ public class DBScan implements InterfaceClustering {
                 cId++;
                 expandCluster(param,clusters,visite,i,voisins,cId);
             }else{
-                clusters[i] = -1;
+                clusters[i] = 0;
             }
 
         }
@@ -40,17 +41,27 @@ public class DBScan implements InterfaceClustering {
 
     private void expandCluster(int[][] param, int[] clusters, boolean[] visite, int index, List<Integer> voisins, int clusterId){
         clusters[index] = clusterId;
-        for(int i : voisins){
-            if(!visite[i]){
+
+        // Utilisation d'un index pour itérer sur la liste voisins
+        int idx = 0;
+        while (idx < voisins.size()) {
+            System.out.println(voisins.size());
+            int i = voisins.get(idx);
+
+            if (!visite[i]) {
                 visite[i] = true;
-                List<Integer> nouveauVoisins = regionQuery(param,i);
-                if(nouveauVoisins.size()>minPts){
+                List<Integer> nouveauVoisins = regionQuery(param, i);
+                if (nouveauVoisins.size() > minPts) {
+                    // Ajouter les nouveaux voisins à la liste principale
                     voisins.addAll(nouveauVoisins);
                 }
             }
-            if(clusters[i] == -1){
+
+            if (clusters[i] == -1) {
                 clusters[i] = clusterId;
             }
+
+            idx++; // Passer à l'élément suivant dans la liste voisins
         }
     }
     private List<Integer> regionQuery(int[][] param, int index){
