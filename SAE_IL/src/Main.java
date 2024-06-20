@@ -48,7 +48,7 @@ public class Main {
         String[] images = {"Planete 1", "Planete 2", "Planete 3", "Planete 4", "Planete 5"};
         String[] normes = {"Redmean", "CIELAB", "Oeil"};
         int flou = 5;
-        int[][] paramSCAN = {{18, 8}, {13, 6}, {13, 6}};
+        int[][] paramSCAN = {{20, 8}, {13, 6}, {13, 6}};
         String ext = "jpg";
         NormeCouleurs[] normes_couleurs = {new NormeRedmean(), new NormeCIELAB(), new NormeOeil()};
         for(String img : images){
