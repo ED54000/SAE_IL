@@ -47,12 +47,13 @@ public class Main {
         */
 
         String[] images = {"Planete 1", "Planete 2", "Planete 3", "Planete 4", "Planete 5"};
-        String[] normes = {"Redmean"};
-        int flou = 4;
-        int[][] paramSCAN = {{20, 10}, {20, 10}, {20, 8}};
+        String[] normes = {"Redmean", "CIELAB", "Oeil"};
+        int flou = 5;
+        int[][] paramSCAN = {{20, 8}, {13, 6}, {13, 6}};
         String ext = "jpg";
         NormeCouleurs[] normes_couleurs = {new NormeRedmean(), new NormeCIELAB(), new NormeOeil()};
         for(String img : images){
+
             int[] dim = image.getDim(path, img + "." + ext);
             image.flouter(path, img + "." + ext, "Planete_Floue","png", flou, new Flou_gaussien());
             for(int i = 0; i < normes.length; i++){

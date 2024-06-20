@@ -13,7 +13,7 @@ public class NormeOeil implements NormeCouleurs{
         double deltaH = Math.sqrt((Math.pow(lab1[1]-lab2[1],2)+Math.pow(lab1[2]-lab2[2],2)-Math.pow(deltaC,2)));
         double Sc = 1 + 0.045*C1;
         double Sh = 1 + 0.015*C1;
-        return Math.sqrt(Math.pow(deltaL,2)+Math.pow(deltaC/Sc,2)+Math.pow(deltaH/Sh,2));
+        return (Math.sqrt(Math.pow(deltaL,2)+Math.pow(deltaC/Sc,2)+Math.pow(deltaH/Sh,2)))*2;
     }
 
     @Override
