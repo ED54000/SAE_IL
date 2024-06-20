@@ -55,7 +55,6 @@ public class Image {
             int avgG = sumG / count;
             int avgB = sumB / count;
 
-            System.out.println("Cluster " + cluster + ": " + avgR + ", " + avgG + ", " + avgB);
 
             biomes[cluster] =  b.getBiome(new int[]{avgR, avgG, avgB});
         }
@@ -93,6 +92,34 @@ public class Image {
         }
     }
 
+    public void imagebiomeflou(int[][] param, String[] biomes, int[] clusters, String path, String newName, String ext, int width, int height, int flou){
+        BiomeRGBMap b= new BiomeRGBMap();
+        // reforme une nouvelle image en fonction des couleurs des biomes attribués
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        for (int i = 0; i < param.length; i++) {
+            int cluster = clusters[i];
+            int color;
+            int x = param[i][3];
+            int y = param[i][4];
+            if(cluster != 0) {
+                int[] rgb = b.getRGB(biomes[cluster]);
+                color = new Color(rgb[0], rgb[1], rgb[2]).getRGB();
+            }else{
+                color = new Color(0,0,0).getRGB();
+            }
+            for(int k = 0; k < flou; k++){
+                for(int j = 0; j < flou; j++){
+                    img.setRGB(x+j, y+k, color);
+                }
+            }
+        }
+        try {
+            ImageIO.write(img, ext, new File(path+newName+"."+ext));
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+    }
+
     public int[][] image_to_param(String path, String name) throws IOException {
         File file = new File(path+name);
         BufferedImage img = ImageIO.read(file);
@@ -107,6 +134,25 @@ public class Image {
                 param[y*img.getHeight() + x][2] = tab[2];
                 param[y*img.getHeight() + x][3] = x;
                 param[y*img.getHeight() + x][4] = y;
+            }
+        }
+        return param;
+    }
+
+    public int[][] image_to_param_flou(String path, String name, int flou) throws IOException {
+        File file = new File(path+name);
+        BufferedImage img = ImageIO.read(file);
+
+        int[][] param = new int[img.getHeight()/flou*img.getWidth()/flou][5];
+        for (int y = 0; y < img.getHeight(); y+=flou) {
+            for (int x = 0; x < img.getWidth(); x+=flou) {
+                int pixel = img.getRGB(x, y);
+                int[] tab = OutilCouleur.getTabColor(pixel);
+                param[y*img.getHeight()/flou + x][0] = tab[0];
+                param[y*img.getHeight()/flou + x][1] = tab[1];
+                param[y*img.getHeight()/flou + x][2] = tab[2];
+                param[y*img.getHeight()/flou + x][3] = x;
+                param[y*img.getHeight()/flou + x][4] = y;
             }
         }
         return param;
