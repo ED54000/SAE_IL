@@ -78,12 +78,8 @@ public class Image {
                 color = new Color(0,0,0).getRGB();
             }
             img.setRGB(x, y, color);
-            try {
-                ImageIO.write(img, ext, new File(path+"Cluster"+i+"."+ext));
-            } catch (IOException e) {
-                System.err.println(e);
-            }
-                    }
+
+        }
 
         try {
             ImageIO.write(img, ext, new File(path+newName+"."+ext));
@@ -164,7 +160,7 @@ public class Image {
         return param;
     }
     public void copy_by_pixel(String path, String name, String newName, String format){
-try {
+        try {
             File file = new File(path+name);
             BufferedImage img = ImageIO.read(file);
             BufferedImage new_img = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -253,9 +249,9 @@ try {
                     Color c = new Color(tab[0],tab[1],tab[2]);
                     Palette p = new Palette(new NormeCIELAB());
                     Color color = p.getPlusProche(c);
-                        new_img.setRGB(x, y, color.getRGB());
-                    }
+                    new_img.setRGB(x, y, color.getRGB());
                 }
+            }
 
             ImageIO.write(new_img, format, new File(path+newName+"."+format));
         }catch (IOException e){
