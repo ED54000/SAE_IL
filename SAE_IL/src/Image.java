@@ -269,12 +269,11 @@ public class Image {
         }
     }
 
-    public void afficherBiomes(String path, String name, String newName, String format){
-        try{
-            File file = new File(path+name);
-            BufferedImage img = ImageIO.read(file);
-            BufferedImage new_img = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
-            for (int y = 0; y < img.getHeight(); y++) {
+    public BufferedImage afficherFond(String path, String name) throws IOException {
+        File file = new File(path + name);
+        BufferedImage img = ImageIO.read(file);
+        BufferedImage new_img = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < img.getHeight(); y++) {
                 for (int x = 0; x < img.getWidth(); x++) {
                     int pixel = img.getRGB(x, y);
                     int alpha = (pixel >> 24) & 0xff;
@@ -288,10 +287,40 @@ public class Image {
                     new_img.setRGB(x, y, newPixel);
                 }
             }
-            ImageIO.write(new_img, format, new File(path+newName+"."+format));
+        return new_img;
+    }
+
+    public void biomeFondBlanc(int[][] param, String[] biomes, int[] clusters, String path, String name, String newName, String ext, int width, int height, int flou) {
+        BiomeRGBMap b = new BiomeRGBMap();
+        String biomeDefaut = "Eau profonde";
+        int[] rgb = b.getRGB(biomeDefaut);
+        BufferedImage img;
+        try {
+            img = afficherFond("C:/Users/grand/OneDrive/Documents/cours/2eme_annee/S4/SAE/SAE_IL/SAE_IL/img/", name);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (int i = 0; i < param.length; i++) {
+
+            String biomeCourant = biomes[clusters[i]];
+            int color;
+            int x = param[i][3] * flou;
+            int y = param[i][4] * flou;
+            //  System.out.println(i + " " + biomeCourant);
+            if (biomeCourant.equals(biomeDefaut)) {
+                color = new Color(rgb[0], rgb[1], rgb[2]).getRGB();
+                if (x < width && y < height) {
+                    img.setRGB(x, y , color);
+                }
+            }
+        }
+        try {
+            ImageIO.write(img, ext, new File(path + newName + "." + ext));
         } catch (IOException e) {
             System.err.println(e);
         }
     }
 
+
 }
+
