@@ -107,9 +107,11 @@ public class Image {
             } else {
                 color = new Color(0, 0, 0).getRGB();
             }
-            for (int k = 0; k < Math.min(width - x, flou); k++) {
-                for (int j = 0; j < Math.min(height - y, flou); j++) {
-                    img.setRGB(x + j, y + k, color);
+            for (int k = 0; k < flou; k++) {
+                for (int j = 0; j < flou; j++) {
+                    if (x + j < width && y + k < height) {
+                        img.setRGB(x + j, y + k, color);
+                    }
                 }
             }
         }
@@ -292,9 +294,8 @@ try {
         }
     }
 
-    public void flouter_moyenne(String path, String name, String newName, String format){
+    public void flouter_moyenne(String path, String name, String newName, String format, int flou){
         Flou_moyenne f = new Flou_moyenne();
-        int flou = 8;
         try{
             File file = new File(path+name);
             BufferedImage img = ImageIO.read(file);

@@ -18,15 +18,18 @@ public class Main {
         //image.modif_color("src/", "img.jpg", "image_modif3","png");
         //  image.modif_oeil("src/", "img.jpg", "image_modif4","png");
         //image.flouter_moyenne("src/", "img.jpg", "image_flou","png");
-        int flou = 2;
-        int[] dim = image.getDim("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete 3.jpg");
-        image.flouter_gaussienne("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete 3.jpg", "Planete_Floue","png", flou);
-        DBScan scan = new DBScan(20, 10, new NormeCIELAB(),(dim[0]+ flou - 1) / flou);
-        int[][] param = image.image_to_param_flou("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete_Floue.png", flou);
-        int[] clusters = scan.algoClust(param);
-        String[] biomes = image.convertCluster(param, clusters);
-        image.imagebiomeflou(param, biomes, clusters, "C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete 3", "png", dim[0], dim[1], flou);
-
+        String[] images = {"Planete 1", "Planete 2", "Planete 3", "Planete 4", "Planete 5"};
+        String ext = "jpg";
+        for(String img : images){
+            int[] dim = image.getDim("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", img + "." + ext);
+            int flou = 2;
+            image.flouter_moyenne("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", img + "." + ext, "Planete_Floue","png", flou);
+            DBScan scan = new DBScan(10, 80, new NormeRedmean(),(dim[0]+ flou - 1) / flou);
+            int[][] param = image.image_to_param_flou("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete_Floue.png", flou);
+            int[] clusters = scan.algoClust(param);
+            String[] biomes = image.convertCluster(param, clusters);
+            image.imagebiomeflou(param, biomes, clusters, "C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/dbscan/", img+" DBSCAN", "png", dim[0], dim[1], flou);
+        }
         /*DBScan scan = new DBScan(3, 5);
         int[][] param = image.image_to_param("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete_Floue.png");
         int[] clusters = scan.algoClust(param);
