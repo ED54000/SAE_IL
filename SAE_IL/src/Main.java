@@ -7,6 +7,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws IOException {
         Image image = new Image();
+        String  path = "C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/";
         //try {
         // image.copy_image("src/", "img.jpg", "image","png");
         //  } catch (IOException e) {
@@ -52,14 +53,14 @@ public class Main {
         String ext = "jpg";
         NormeCouleurs[] normes_couleurs = {new NormeRedmean(), new NormeCIELAB(), new NormeOeil()};
         for(String img : images){
-            int[] dim = image.getDim("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", img + "." + ext);
-            image.flouter("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", img + "." + ext, "Planete_Floue","png", flou, new Flou_gaussien());
+            int[] dim = image.getDim(path, img + "." + ext);
+            image.flouter(path, img + "." + ext, "Planete_Floue","png", flou, new Flou_gaussien());
             for(int i = 0; i < normes.length; i++){
                 DBScan scan = new DBScan(paramSCAN[i][0],paramSCAN[i][1], normes_couleurs[i],dim[0]);
-                int[][] param = image.image_to_param("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete_Floue.png");
+                int[][] param = image.image_to_param(path, "Planete_Floue.png");
                 int[] clusters = scan.algoClust(param);
                 String[] biomes = image.convertCluster(param, clusters);
-                image.imagebiome(param, biomes, clusters, "C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/dbscan/"+normes[i]+"/", img+" DBSCAN " + normes[i], "png", dim[0], dim[1]);
+                image.imagebiome(param, biomes, clusters, path+"/dbscan/"+normes[i]+"/", img+" DBSCAN " + normes[i], "png", dim[0], dim[1]);
                 System.out.println("Image " + img + " avec la norme " + normes[i] + " a été traitée");
             }
         }
