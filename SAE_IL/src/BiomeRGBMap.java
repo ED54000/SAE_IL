@@ -16,6 +16,7 @@ public class BiomeRGBMap {
         biomeMap.put("Prairie", new int[]{104, 95, 82});
         biomeMap.put("Taïga", new int[]{43, 50, 35});
         biomeMap.put("Glacier", new int[]{200, 200, 200});
+        biomeMap.put("Montagne", new int[]{55, 62, 57});
     }
 
 
