@@ -99,11 +99,11 @@ public class Image {
                 int pixel = img.getRGB(x, y);
                 int[] tab = OutilCouleur.getTabColor(pixel);
 
-                param[y*img.getWidth() + x][0] = tab[0];
-                param[y*img.getWidth() + x][1] = tab[1];
-                param[y*img.getWidth() + x][2] = tab[2];
-                param[y*img.getWidth() + x][3] = x;
-                param[y*img.getWidth() + x][4] = y;
+                param[y * img.getWidth() + x][0] = tab[0];
+                param[y * img.getWidth() + x][1] = tab[1];
+                param[y * img.getWidth() + x][2] = tab[2];
+                param[y * img.getWidth() + x][3] = x;
+                param[y * img.getWidth() + x][4] = y;
 
             }
         }
@@ -296,11 +296,16 @@ public class Image {
 
     public void biomeFondBlanc(int[][] param, String[] biomes, int[] clusters, String path, String name, String newName, String ext, int width, int height) {
         BiomeRGBMap b = new BiomeRGBMap();
-        for (int j = 1; j < biomes.length; j++) {
-            int[] rgb = b.getRGB(biomes[j]);
+        for (String biome : biomes) {
+            int[] rgb;
+            if (biome.equals("bruit")) {
+                rgb = new int[]{0, 0, 0};
+            } else {
+                rgb = b.getRGB(biome);
+            }
             BufferedImage img;
             try {
-                img = afficherFond("C:/Users/grand/OneDrive/Documents/cours/2eme_annee/S4/SAE/SAE_IL/SAE_IL/img/", name);
+                img = afficherFond(path, name);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -309,26 +314,24 @@ public class Image {
                 int color;
                 int x = param[i][3];
                 int y = param[i][4];
-                if (biomeCourant.equals(biomes[j])) {
+                if (biomeCourant.equals(biome)) {
                     color = new Color(rgb[0], rgb[1], rgb[2]).getRGB();
                     if (x < width && y < height) {
                         img.setRGB(x, y, color);
                     }
                 }
             }
-
-
-        try {
-            Graphics2D g2d = img.createGraphics();
-            g2d.setColor(Color.BLACK);  // Couleur du texte
-            g2d.setFont(new Font("Arial", Font.BOLD, 20));  // Police et taille du texte
-            g2d.drawString(biomes[j], 10, 25);  // Position du texte sur l'image
-            g2d.dispose();
-            ImageIO.write(img, ext, new File(path + name + " "+biomes[j] + "." + ext));
-        } catch (IOException e) {
-            System.err.println(e);
+            try {
+                Graphics2D g2d = img.createGraphics();
+                g2d.setColor(Color.BLACK);
+                g2d.setFont(new Font("Arial", Font.BOLD, 50));
+                g2d.drawString(biome, 10, 55);
+                g2d.dispose();
+                ImageIO.write(img, ext, new File(path + name + " " + biome + "." + ext));
+            } catch (IOException e) {
+                System.err.println(e);
+            }
         }
-    }
     }
 
 
