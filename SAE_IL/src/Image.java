@@ -86,29 +86,29 @@ public class Image {
         }
     }
 
-    public void imagebiomeflou(int[][] param, String[] biomes, int[] clusters, String path, String newName, String ext, int width, int height, int flou){
-        BiomeRGBMap b= new BiomeRGBMap();
-        // reforme une nouvelle image en fonction des couleurs des biomes attribués
+    public void imagebiomeflou(int[][] param, String[] biomes, int[] clusters, String path, String newName, String ext, int width, int height, int flou) {
+        BiomeRGBMap b = new BiomeRGBMap();
+        // Reform a new image based on the colors of the assigned biomes
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         for (int i = 0; i < param.length; i++) {
             int cluster = clusters[i];
             int color;
-            int x = param[i][3];
-            int y = param[i][4];
-            if(cluster != 0) {
+            int x = param[i][3] * flou;
+            int y = param[i][4] * flou;
+            if (cluster != 0) {
                 int[] rgb = b.getRGB(biomes[cluster]);
                 color = new Color(rgb[0], rgb[1], rgb[2]).getRGB();
-            }else{
-                color = new Color(0,0,0).getRGB();
+            } else {
+                color = new Color(0, 0, 0).getRGB();
             }
-            for(int k = 0; k < flou; k++){
-                for(int j = 0; j < flou; j++){
-                    img.setRGB(x+j, y+k, color);
+            for (int k = 0; k < Math.min(width - x, flou); k++) {
+                for (int j = 0; j < Math.min(height - y, flou); j++) {
+                    img.setRGB(x + j, y + k, color);
                 }
             }
         }
         try {
-            ImageIO.write(img, ext, new File(path+newName+"."+ext));
+            ImageIO.write(img, ext, new File(path + newName + "." + ext));
         } catch (IOException e) {
             System.err.println(e);
         }
@@ -134,24 +134,27 @@ public class Image {
     }
 
     public int[][] image_to_param_flou(String path, String name, int flou) throws IOException {
-        File file = new File(path+name);
+        File file = new File(path + name);
         BufferedImage img = ImageIO.read(file);
 
-        int[][] param = new int[img.getHeight()/flou*img.getWidth()/flou][5];
-        for (int y = 0; y < img.getHeight(); y+=flou) {
-            for (int x = 0; x < img.getWidth(); x+=flou) {
+        int newWidth = (img.getWidth() + flou - 1) / flou;  // Calculer la largeur ajustée
+        int newHeight = (img.getHeight() + flou - 1) / flou;  // Calculer la hauteur ajustée
+
+        int[][] param = new int[newHeight * newWidth][5];
+        for (int y = 0; y < img.getHeight(); y += flou) {
+            for (int x = 0; x < img.getWidth(); x += flou) {
                 int pixel = img.getRGB(x, y);
                 int[] tab = OutilCouleur.getTabColor(pixel);
-                param[y*img.getHeight()/flou + x][0] = tab[0];
-                param[y*img.getHeight()/flou + x][1] = tab[1];
-                param[y*img.getHeight()/flou + x][2] = tab[2];
-                param[y*img.getHeight()/flou + x][3] = x;
-                param[y*img.getHeight()/flou + x][4] = y;
+                int index = (y / flou) * newWidth + (x / flou);
+                param[index][0] = tab[0];
+                param[index][1] = tab[1];
+                param[index][2] = tab[2];
+                param[index][3] = x / flou;
+                param[index][4] = y / flou;
             }
         }
         return param;
     }
-
     public void copy_by_pixel(String path, String name, String newName, String format){
 try {
             File file = new File(path+name);
@@ -314,9 +317,8 @@ try {
         }
     }
 
-    public void flouter_gaussienne(String path, String name, String newName, String format){
+    public void flouter_gaussienne(String path, String name, String newName, String format, int flou){
         Flou_gaussien f = new Flou_gaussien();
-        int flou = 8;
         try{
             File file = new File(path+name);
             BufferedImage img = ImageIO.read(file);

@@ -18,14 +18,22 @@ public class Main {
         //image.modif_color("src/", "img.jpg", "image_modif3","png");
         //  image.modif_oeil("src/", "img.jpg", "image_modif4","png");
         //image.flouter_moyenne("src/", "img.jpg", "image_flou","png");
-        //image.flouter_gaussienne("img/", "Planete 2.jpg", "Planete_Floue","png");
-        DBScan scan = new DBScan(3, 5);
-        int[][] param = image.image_to_param("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "test2.jpg");
+        int flou = 2;
+        int[] dim = image.getDim("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete 3.jpg");
+        image.flouter_gaussienne("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete 3.jpg", "Planete_Floue","png", flou);
+        DBScan scan = new DBScan(20, 8, new NormeCIELAB(),(dim[0]+ flou - 1) / flou);
+        int[][] param = image.image_to_param_flou("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete_Floue.png", flou);
+        int[] clusters = scan.algoClust(param);
+        String[] biomes = image.convertCluster(param, clusters);
+        image.imagebiomeflou(param, biomes, clusters, "C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete 3", "png", dim[0], dim[1], flou);
+
+        /*DBScan scan = new DBScan(3, 5);
+        int[][] param = image.image_to_param("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete_Floue.png");
         int[] clusters = scan.algoClust(param);
         System.out.println(Arrays.toString(clusters));
         String[] biomes = image.convertCluster(param, clusters);
         int[] dim = image.getDim("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "test2.jpg");
         image.imagebiome(param, biomes, clusters, "C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "test2",  "png", dim[0], dim[1]);
-        //image.afficherBiomes("img/", "Planete 2.jpg", "Fond","png");
+        //image.afficherBiomes("img/", "Planete 2.jpg", "Fond","png");*/
     }
 }
