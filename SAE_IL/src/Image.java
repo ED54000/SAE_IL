@@ -88,35 +88,6 @@ public class Image {
         }
     }
 
-    public void imagebiomeflou(int[][] param, String[] biomes, int[] clusters, String path, String newName, String ext, int width, int height, int flou) {
-        BiomeRGBMap b = new BiomeRGBMap();
-        // Reform a new image based on the colors of the assigned biomes
-        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        for (int i = 0; i < param.length; i++) {
-            int cluster = clusters[i];
-            int color;
-            int x = param[i][3] * flou;
-            int y = param[i][4] * flou;
-            if (cluster != 0) {
-                int[] rgb = b.getRGB(biomes[cluster]);
-                color = new Color(rgb[0], rgb[1], rgb[2]).getRGB();
-            } else {
-                color = new Color(0, 0, 0).getRGB();
-            }
-            for (int k = 0; k < flou; k++) {
-                for (int j = 0; j < flou; j++) {
-                    if (x + j < width && y + k < height) {
-                        img.setRGB(x + j, y + k, color);
-                    }
-                }
-            }
-        }
-        try {
-            ImageIO.write(img, ext, new File(path + newName + "." + ext));
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-    }
 
     public int[][] image_to_param(String path, String name) throws IOException {
         File file = new File(path+name);
@@ -137,28 +108,7 @@ public class Image {
         return param;
     }
 
-    public int[][] image_to_param_flou(String path, String name, int flou) throws IOException {
-        File file = new File(path + name);
-        BufferedImage img = ImageIO.read(file);
 
-        int newWidth = (img.getWidth() + flou - 1) / flou;  // Calculer la largeur ajustée
-        int newHeight = (img.getHeight() + flou - 1) / flou;  // Calculer la hauteur ajustée
-
-        int[][] param = new int[newHeight * newWidth][5];
-        for (int y = 0; y < img.getHeight(); y += flou) {
-            for (int x = 0; x < img.getWidth(); x += flou) {
-                int pixel = img.getRGB(x, y);
-                int[] tab = OutilCouleur.getTabColor(pixel);
-                int index = (y / flou) * newWidth + (x / flou);
-                param[index][0] = tab[0];
-                param[index][1] = tab[1];
-                param[index][2] = tab[2];
-                param[index][3] = x / flou;
-                param[index][4] = y / flou;
-            }
-        }
-        return param;
-    }
     public void copy_by_pixel(String path, String name, String newName, String format){
         try {
             File file = new File(path+name);
@@ -290,59 +240,29 @@ public class Image {
         }
     }
 
-    public void flouter_moyenne(String path, String name, String newName, String format, int flou){
-        Flou_moyenne f = new Flou_moyenne();
+    public void flouter(String path, String name, String newName, String format, int flou, Flou f){
         try{
             File file = new File(path+name);
             BufferedImage img = ImageIO.read(file);
-            Color[][] tab = new Color[flou][flou];
             BufferedImage new_img = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-            for (int y = 0; y < img.getHeight(); y+=flou) {
-                for (int x = 0; x < img.getWidth(); x+=flou) {
-                    for(int k = 0; k < Math.min(flou,img.getHeight()-y); k++){
-                        for(int i = 0; i < Math.min(flou,img.getWidth()-x); i++){
-                            int pixel = img.getRGB(x+i, y+k);
-                            tab[k][i] = new Color(pixel);
+            for (int y = 0; y < img.getHeight(); y+=1) {
+                for (int x = 0; x < img.getWidth(); x+=1) {
+                    Color[][] tab = new Color[flou][flou];
+                    for (int i = 0; i < flou; i++) {
+                        for (int j = 0; j < flou; j++) {
+                            int x1 = x - flou/2 + i;
+                            int y1 = y - flou/2 + j;
+                            if(x1 >= 0 && x1 < img.getWidth() && y1 >= 0 && y1 < img.getHeight()){
+                                tab[i][j] = new Color(img.getRGB(x1, y1));
+                            }else{
+                                tab[i][j] = new Color(0,0,0);
+                            }
                         }
                     }
-                    Color color = f.calcule(tab);
-                    for(int k = 0; k < Math.min(flou,img.getHeight()-y); k++){
-                        for(int i = 0; i <  Math.min(flou,img.getWidth()-x); i++){
-                            new_img.setRGB(x+i, y+k, color.getRGB());
-                        }
-                    }
+                    new_img.setRGB(x, y, f.calcule(tab).getRGB());
                 }
             }
 
-            ImageIO.write(new_img, format, new File(path+newName+"."+format));
-        }catch (IOException e){
-            System.out.println(e);
-        }
-    }
-
-    public void flouter_gaussienne(String path, String name, String newName, String format, int flou){
-        Flou_gaussien f = new Flou_gaussien();
-        try{
-            File file = new File(path+name);
-            BufferedImage img = ImageIO.read(file);
-            Color[][] tab = new Color[flou][flou];
-            BufferedImage new_img = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-            for (int y = 0; y < img.getHeight(); y+=flou) {
-                for (int x = 0; x < img.getWidth(); x+=flou) {
-                    for(int k = 0; k < Math.min(flou,img.getHeight()-y); k++){
-                        for(int i = 0; i < Math.min(flou,img.getWidth()-x); i++){
-                            int pixel = img.getRGB(x+i, y+k);
-                            tab[k][i] = new Color(pixel);
-                        }
-                    }
-                    Color color = f.calcule(tab);
-                    for(int k = 0; k < Math.min(flou,img.getHeight()-y); k++){
-                        for(int i = 0; i <  Math.min(flou,img.getWidth()-x); i++){
-                            new_img.setRGB(x+i, y+k, color.getRGB());
-                        }
-                    }
-                }
-            }
             ImageIO.write(new_img, format, new File(path+newName+"."+format));
         }catch (IOException e){
             System.out.println(e);
