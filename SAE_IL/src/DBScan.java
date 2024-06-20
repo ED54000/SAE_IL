@@ -14,7 +14,7 @@ public class DBScan implements InterfaceClustering {
     public DBScan(int minPts, double eps, NormeCouleurs norme, int width) {
         this.minPts = minPts;
         this.eps = eps;
-        this.area = 4;
+        this.area = 6;
         this.norme = norme;
         this.width = width;
     }
@@ -98,7 +98,7 @@ public class DBScan implements InterfaceClustering {
                 int voisinIndex = x + y * width;
                 if (voisinIndex != index && (clusters[voisinIndex] == -1 || clusters[voisinIndex] == 0)) {
                     int[] voisinPoint = param[voisinIndex];
-                    int distance = (int) (norme.distanceCouleur(voisinPoint, moyenneCouleur)*1.5 + distanceCood(voisinPoint, point)*0.5);
+                    int distance = (int) (norme.distanceCouleur(voisinPoint, moyenneCouleur)*1.5 + distanceCood(voisinPoint, point));
                     if (distance <= eps) {
                         voisins.add(voisinIndex);
                     }
