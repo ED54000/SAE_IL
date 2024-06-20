@@ -16,14 +16,10 @@ public class HAC implements InterfaceClustering {
     private int[][] fusionner(int[][] C1, int[][] C2) {
         int[][] C = new int[C1.length + C2.length][C1[0].length];
         for (int i = 0; i < C1.length; i++) {
-            for (int j = 0; j < C1[0].length; j++) {
-                C[i][j] = C1[i][j];
-            }
+            System.arraycopy(C1[i], 0, C[i], 0, C1[0].length);
         }
         for (int i = 0; i < C2.length; i++) {
-            for (int j = 0; j < C2[0].length; j++) {
-                C[i + C1.length][j] = C2[i][j];
-            }
+            System.arraycopy(C2[i], 0, C[i + C1.length], 0, C2[0].length);
         }
         return C;
     }
@@ -31,7 +27,6 @@ public class HAC implements InterfaceClustering {
     private double linkage(int[][] C1, int[][] C2) {
         return Math.abs(moyenneCluster(C1) - moyenneCluster(C2));
     }
-
 
     @Override
     public int[] algoClust(int[][] param) {
@@ -43,58 +38,60 @@ public class HAC implements InterfaceClustering {
             int[][] singlePointCluster = {param[i]};
             L.add(singlePointCluster);
         }
+
+        // Initialiser la matrice de distances
+        double[][] distances = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                distances[i][j] = linkage(L.get(i), L.get(j));
+                distances[j][i] = distances[i][j];
+            }
+        }
+
         /* Boucle principale */
         while (L.size() > 1) {
             double min = Double.MAX_VALUE;
             int indexC1 = 0;
             int indexC2 = 0;
+
             // Trouver la paire de clusters la plus proche
             for (int i = 0; i < L.size(); i++) {
                 for (int j = i + 1; j < L.size(); j++) {
-                    double d = linkage(L.get(i), L.get(j));
-                    if (d < min) {
-                        min = d;
+                    if (distances[i][j] < min) {
+                        min = distances[i][j];
                         indexC1 = i;
                         indexC2 = j;
                     }
                 }
             }
-            /* On fusionne C1 et C2 */
+
             // Fusionner les deux clusters les plus proches
             int[][] C1 = L.get(indexC1);
             int[][] C2 = L.get(indexC2);
             int[][] C = fusionner(C1, C2);
-            /* On enlève C1 et C2 de L */
-            if (indexC1 > indexC2) {
-                L.remove(indexC1);
-                L.remove(indexC2);
-            } else {
-                L.remove(indexC2);
-                L.remove(indexC1);
-            }
+
+            // Mise à jour de la matrice de distances
             for (int i = 0; i < L.size(); i++) {
                 if (i != indexC1 && i != indexC2) {
-                    double d = linkage(C, L.get(i));
-                    param[i][L.size() - 1] = (int) d;
-                    param[L.size() - 1][i] = (int) d;
+                    distances[i][indexC1] = linkage(L.get(i), C);
+                    distances[indexC1][i] = distances[i][indexC1];
                 }
-
-                /*On enlève les distances concernant C1 et C2 de D*/
-                for (int j = 0; j < param.length; j++) {
-                    for (int k = 0; k < param[j].length; k++) {
-                        if (param[j][k] == C1[j][k] || param[j][k] == C2[j][k]) {
-                            param[j][k] = 0;
-                        }
-                    }
-                }
-                /*Ajouter C à L*/
-                L.add(C);
             }
 
+            // Enlever les distances des anciens clusters fusionnés
+            for (int i = 0; i < n; i++) {
+                distances[i][indexC2] = Double.MAX_VALUE;
+                distances[indexC2][i] = Double.MAX_VALUE;
+            }
+
+            // Enlever les anciens clusters et ajouter le nouveau cluster fusionné
+            L.remove(indexC2);
+            L.set(indexC1, C);
         }
-        /* Retourner le dendrogramme à coupe*/
+
+        // Retourner le résultat du clustering
         int[] result = new int[n];
-        Arrays.fill(result, 1);
+        Arrays.fill(result, 0);
         return result;
     }
 }
