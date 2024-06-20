@@ -20,7 +20,7 @@ public class BiomeRGBMap {
 
 
     public String getBiome(int[] x){
-        int[] meilleurRGB = {237, 201, 175};
+        int[] meilleurRGB = {152, 140, 120};
         double meilleurDist = distance(meilleurRGB,x);
         double distanceP;
         String biome = "Désert";
