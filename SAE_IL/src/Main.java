@@ -21,7 +21,7 @@ public class Main {
         int flou = 2;
         int[] dim = image.getDim("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete 3.jpg");
         image.flouter_gaussienne("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete 3.jpg", "Planete_Floue","png", flou);
-        DBScan scan = new DBScan(20, 8, new NormeCIELAB(),(dim[0]+ flou - 1) / flou);
+        DBScan scan = new DBScan(20, 10, new NormeCIELAB(),(dim[0]+ flou - 1) / flou);
         int[][] param = image.image_to_param_flou("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete_Floue.png", flou);
         int[] clusters = scan.algoClust(param);
         String[] biomes = image.convertCluster(param, clusters);
