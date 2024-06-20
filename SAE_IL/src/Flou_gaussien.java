@@ -8,7 +8,7 @@ public class Flou_gaussien implements Flou{
         double r = 0;
         double g = 0;
         double b = 0;
-        double sigma = 10;
+        double sigma = 5;
         for(int i = 0; i < couleurs.length; i++){
             for(int j = 0; j < couleurs[0].length; j++){
                 sum += calculIndice(i, j, sigma);

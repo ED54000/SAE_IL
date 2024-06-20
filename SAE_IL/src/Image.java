@@ -98,11 +98,11 @@ public class Image {
             for (int x = 0; x < img.getWidth(); x++) {
                 int pixel = img.getRGB(x, y);
                 int[] tab = OutilCouleur.getTabColor(pixel);
-                param[y*img.getHeight() + x][0] = tab[0];
-                param[y*img.getHeight() + x][1] = tab[1];
-                param[y*img.getHeight() + x][2] = tab[2];
-                param[y*img.getHeight() + x][3] = x;
-                param[y*img.getHeight() + x][4] = y;
+                param[y*img.getWidth() + x][0] = tab[0];
+                param[y*img.getWidth() + x][1] = tab[1];
+                param[y*img.getWidth() + x][2] = tab[2];
+                param[y*img.getWidth() + x][3] = x;
+                param[y*img.getWidth() + x][4] = y;
             }
         }
         return param;

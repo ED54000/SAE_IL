@@ -47,16 +47,16 @@ public class Main {
 
         String[] images = {"Planete 1", "Planete 2", "Planete 3", "Planete 4", "Planete 5"};
         String[] normes = {"Redmean", "CIELAB", "Oeil"};
-        int flou = 4;
-        int[][] paramSCAN = {{20, 10}, {20, 10}, {20, 8}};
+        int flou = 5;
+        int[][] paramSCAN = {{18, 8}, {13, 6}, {13, 6}};
         String ext = "jpg";
         NormeCouleurs[] normes_couleurs = {new NormeRedmean(), new NormeCIELAB(), new NormeOeil()};
         for(String img : images){
             int[] dim = image.getDim("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", img + "." + ext);
             image.flouter("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", img + "." + ext, "Planete_Floue","png", flou, new Flou_gaussien());
+            int[][] param = image.image_to_param("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete_Floue.png");
             for(int i = 0; i < normes.length; i++){
                 DBScan scan = new DBScan(paramSCAN[i][0],paramSCAN[i][1], normes_couleurs[i],dim[0]);
-                int[][] param = image.image_to_param("C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/", "Planete_Floue.png");
                 int[] clusters = scan.algoClust(param);
                 String[] biomes = image.convertCluster(param, clusters);
                 image.imagebiome(param, biomes, clusters, "C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/dbscan/"+normes[i]+"/", img+" DBSCAN " + normes[i], "png", dim[0], dim[1]);
