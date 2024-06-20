@@ -6,9 +6,16 @@ public class DBScan implements InterfaceClustering {
     private final int minPts;
     private final double eps;
 
-    public DBScan(int minPts, double eps) {
+    private int area = 3;
+    private final int width ;
+
+    private final NormeCouleurs norme;
+
+    public DBScan(int minPts, double eps, NormeCouleurs norme, int width) {
         this.minPts = minPts;
         this.eps = eps;
+        this.norme = norme;
+        this.width = width;
     }
 
     @Override
@@ -39,6 +46,11 @@ public class DBScan implements InterfaceClustering {
     private void expandCluster(int[][] param, int[] clusters, boolean[] visite, int index, List<Integer> voisins, int clusterId) {
         clusters[index] = clusterId;
 
+        boolean[] estVoisin = new boolean[param.length];
+        for (int voisin : voisins) {
+            estVoisin[voisin] = true;
+        }
+
         int idx = 0;
         while (idx < voisins.size()) {
             int i = voisins.get(idx);
@@ -48,8 +60,9 @@ public class DBScan implements InterfaceClustering {
                 List<Integer> nouveauVoisins = regionQuery(param, i, clusters);
                 if (nouveauVoisins.size() >= minPts) {
                     for (Integer nouveauVoisin : nouveauVoisins) {
-                        if (!voisins.contains(nouveauVoisin)) {
+                        if (!estVoisin[nouveauVoisin]) {
                             voisins.add(nouveauVoisin);
+                            estVoisin[nouveauVoisin] = true;
                         }
                     }
                 }
@@ -64,21 +77,29 @@ public class DBScan implements InterfaceClustering {
     }
 
     private List<Integer> regionQuery(int[][] param, int index, int[] clusters) {
-        List<Integer> voisin = new ArrayList<>();
+        List<Integer> voisins = new ArrayList<>();
         int[] point = param[index];
-        for (int i = 0; i < param.length; i++) {
-            if (i != index && distance(point, param[i]) <= eps && !voisin.contains(i) && (clusters[i] == -1 || clusters[i] == 0)) {
-                voisin.add(i);
+        int pointX = point[3];
+        int pointY = point[4];
+
+        // Regarde seulement les voisins a moins de eps pixels de distance
+        for (int x = Math.max(0, pointX - area); x <= Math.min(width - 1, pointX + area); x++) {
+            for (int y = Math.max(0, pointY - area); y <= Math.min(param.length / width - 1, pointY + area); y++) {
+                int voisinIndex = x + y * width;
+                if (voisinIndex != index && clusters[voisinIndex] == -1 || clusters[voisinIndex] == 0) {
+                    int[] voisinPoint = param[voisinIndex];
+                    int distance = (int) (norme.distanceCouleur(voisinPoint, point)*1.5 + distanceCood(voisinPoint, point));
+                    if (distance <= eps) {
+                        voisins.add(voisinIndex);
+                    }
+                }
             }
         }
-        return voisin;
+        return voisins;
     }
 
-    private double distance(int[] p1, int[] p2) {
-        double res = 0;
-        for (int i = 0; i < p1.length; i++) {
-            res += (p1[i] - p2[i]) * (p1[i] - p2[i]);
-        }
-        return Math.sqrt(res);
+    private double distanceCood(int[] p1, int[] p2){
+        return Math.sqrt(Math.pow(p1[3]-p2[3],2)+Math.pow(p1[4]-p2[4],2));
     }
+
 }

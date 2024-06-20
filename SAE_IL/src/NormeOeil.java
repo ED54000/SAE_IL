@@ -15,4 +15,9 @@ public class NormeOeil implements NormeCouleurs{
         double Sh = 1 + 0.015*C1;
         return Math.sqrt(Math.pow(deltaL,2)+Math.pow(deltaC/Sc,2)+Math.pow(deltaH/Sh,2));
     }
+
+    @Override
+    public double distanceCouleur(int[] c1, int[] c2) {
+        return distanceCouleur(new Color(c1[0], c1[1], c1[2]), new Color(c2[0], c2[1], c2[2]));
+    }
 }
