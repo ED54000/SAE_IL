@@ -28,6 +28,8 @@ public class Main {
             }
         }
 
+        System.out.println("Affichage de l'image Planete 1 en séparant les biomes avec un fond blanc");
+
         int[] dim = image.getDim(path, "Planete 1.jpg");
         DBScan scan = new DBScan(40,12, new NormeCIELAB(),dim[0]);
         int[][] param = image.image_to_param(path, "Planete_Floue.png");
