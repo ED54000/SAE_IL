@@ -78,11 +78,7 @@ public class Image {
                 color = new Color(0,0,0).getRGB();
             }
             img.setRGB(x, y, color);
-            try {
-                ImageIO.write(img, ext, new File(path+"Cluster"+i+"."+ext));
-            } catch (IOException e) {
-                System.err.println(e);
-            }
+
         }
 
         try {
