@@ -14,7 +14,7 @@ public class DBScan implements InterfaceClustering {
     public DBScan(int minPts, double eps, NormeCouleurs norme, int width) {
         this.minPts = minPts;
         this.eps = eps;
-        this.area = (int) eps;
+        this.area = (int) Math.ceil(eps);
         this.norme = norme;
         this.width = width;
     }
