@@ -7,7 +7,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws IOException {
         Image image = new Image();
-        String  path = "C:/Users/user/Desktop/Cours/SAE-Planet/SAE_IL/SAE_IL/img/";
+        String  path = "C:/Users/grand/OneDrive/Documents/cours/2eme_annee/S4/SAE/SAE_IL/SAE_IL/img/";
         //try {
         // image.copy_image("src/", "img.jpg", "image","png");
         //  } catch (IOException e) {
@@ -47,7 +47,7 @@ public class Main {
         */
 
         String[] images = {"Planete 1", "Planete 2", "Planete 3", "Planete 4", "Planete 5"};
-        String[] normes = {"Redmean", "CIELAB", "Oeil"};
+        String[] normes = {"Redmean"};
         int flou = 4;
         int[][] paramSCAN = {{20, 10}, {20, 10}, {20, 8}};
         String ext = "jpg";
@@ -60,7 +60,7 @@ public class Main {
                 int[][] param = image.image_to_param(path, "Planete_Floue.png");
                 int[] clusters = scan.algoClust(param);
                 String[] biomes = image.convertCluster(param, clusters);
-                image.imagebiome(param, biomes, clusters, path+"/dbscan/"+normes[i]+"/", img+" DBSCAN " + normes[i], "png", dim[0], dim[1]);
+                image.biomeFondBlanc(param, biomes, clusters, path, img+".jpg",img+ "FondBiomes", "png", dim[0], dim[1]);
                 System.out.println("Image " + img + " avec la norme " + normes[i] + " a été traitée");
             }
         }
